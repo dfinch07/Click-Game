@@ -1,10 +1,14 @@
-import React from "react";
+import React from 'react';
 import "./Item.css";
 
-const Item = (props) => (
+const Item = ({name, image, onClick}) =>
+			<img 
+				className="click-item"
+				src={image}
+				alt={name}
+				name={name}
+				onClick={ () => onClick(name) }
+			/>;
 
-   <img className="click-item" src={props.image} alt={props.name}/>
-
-);
 
 export default Item;

@@ -7,7 +7,13 @@ import characters from "./characters.json";
 import './App.css';
 
 class App extends Component {
-  // Setting the initial state of the Counter component
+  // Setting the initial state of the App component
+  constructor(){
+    super()
+
+    this.handleShuffleChararcters = this.handleShuffleChararcters.bind(this)
+  }
+
   state = {
     score: 0,
     topScore: 0,
@@ -33,15 +39,40 @@ class App extends Component {
     }
 
     return array;
-  };
+  }
 
-  renderCharacters = () => {
-    let randomizedCharacters = this.shuffle(characters);
+  // handleClickStatus = (charID, wasClicked) => {
+  //   console.log(charID, wasClicked);   
 
-    return randomizedCharacters.map((character) =>
-            <Item image={character.image} name={character.name} key={character.id} clicked="false" />
-          )
-  };
+  // }
+
+  handleShuffleChararcters = (name) => {
+    console.log('click to shuffle', name)
+
+    const characters = this.state.characters.map(ch => ch.name === name ? { ...ch, clicked: true } : ch)
+
+    this.setState({ characters: this.shuffle(characters) })
+  }
+
+  handleRenderCharacters = () => {
+    console.log(this.state.characters)
+    return this.state.characters.map((character) =>
+            <Item 
+              image={character.image} 
+              name={character.name} 
+              key={character.id} 
+              id={character.id} 
+              status={character.clicked} 
+              onClick={this.handleShuffleChararcters} 
+            />
+          );
+  }
+
+  // handleClickAction = (id, wasClicked) => {
+
+  //   this.handleRenderCharacters();
+
+  // }
 
   render() {
     return (
@@ -49,7 +80,7 @@ class App extends Component {
         <Navbar />
         <Header />
         <div className="content">
-          {this.renderCharacters()}
+          {this.handleRenderCharacters()}
         </div>
         <Footer />
       </div>
