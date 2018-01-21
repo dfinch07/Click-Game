@@ -4,11 +4,11 @@ A memory game built with React. Click on the characters displayed one at a time 
 
 ## Working Link
  
-[Working Link](https://obscure-dusk-73998.herokuapp.com/)
+[Working Link](https://frendon001.github.io/Click-Game/)
 
 ## Description on how to use the app
 
-![Click Game](/public/assets/images/mongo_news.png)
+![Click Game](/public/assets/images/click_game.png)
 
 
 ## Requirements
