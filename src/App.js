@@ -17,6 +17,8 @@ class App extends Component {
   state = {
     score: 0,
     topScore: 0,
+    maxScore: 12,
+    message: "Click an image to begin!",
     characters: characters
   };
 
@@ -41,17 +43,68 @@ class App extends Component {
     return array;
   }
 
-  // handleClickStatus = (charID, wasClicked) => {
-  //   console.log(charID, wasClicked);   
+  handleCorrectSelection = () => {
+    
+    if (this.state.score+1 > this.state.topScore) {
+      this.setState({topScore: this.state.topScore+1})
+    }
+    console.log(this.state.score+1)
+    if (this.state.score+1 === this.state.maxScore) {
+      this.setState({score: this.state.score+1, message: "Congrats! You win!"})
+    }else{
+      this.setState({score: this.state.score+1, message: "You guessed correctly!"})
+    }
+  }
 
-  // }
+  handleResetWin = (currentCharacters) => {
+    //if current score is at max reset score to 0 and topscore to 0
+    console.log(this.state.score, this.state.maxScore)
+    if (this.state.score+1 === this.state.maxScore) {
+      this.setState({score: 0, topscore: 0})
+      //reset clicked state for characters
+      const updatedCharacters = currentCharacters.map(ch => (true) ? { ...ch, isClicked: false } : ch)
+        console.log("win", updatedCharacters)
+      return updatedCharacters
+    }else{
+      return currentCharacters
+    }
+  }
+
+  handleIncorrectSelection = () => {
+    //incorrect selection made, reset score to 0
+    this.setState({score: 0, message: "You guessed incorrectly!"})
+    //reset clicked state for characters
+    const updatedCharacters = this.state.characters.map(ch => ch.isClicked === true ? { ...ch, isClicked: false } : ch)
+    return updatedCharacters
+  }
+
 
   handleShuffleChararcters = (name) => {
     console.log('click to shuffle', name)
+    // this.handleResetWin();
+    var resetNeeded = false;
+    const characters = this.state.characters.map(ch => {
+      //ch.name === name ? { ...ch, isClicked: true } : ch
+      if(ch.name === name) {
+        if (ch.isClicked === false) {
+          this.handleCorrectSelection()
+          return { ...ch, isClicked: true}
+        }else{
+          resetNeeded = true
+          return { ...ch, isClicked: false}
+        }
+      }
+      return ch
+    })
 
-    const characters = this.state.characters.map(ch => ch.name === name ? { ...ch, clicked: true } : ch)
+    if (resetNeeded) {
+      this.setState({ characters: this.shuffle(this.handleIncorrectSelection()) })
+      
+    }else{
+      this.setState({ characters: this.shuffle(this.handleResetWin(characters)) })
+    }
 
-    this.setState({ characters: this.shuffle(characters) })
+    
   }
 
   handleRenderCharacters = () => {
@@ -61,23 +114,19 @@ class App extends Component {
               image={character.image} 
               name={character.name} 
               key={character.id} 
-              id={character.id} 
-              status={character.clicked} 
               onClick={this.handleShuffleChararcters} 
             />
           );
   }
 
-  // handleClickAction = (id, wasClicked) => {
-
-  //   this.handleRenderCharacters();
-
-  // }
-
   render() {
     return (
       <div className="App">
-        <Navbar />
+        <Navbar
+          score={this.state.score}
+          topscore={this.state.topScore}
+          message={this.state.message}
+        />
         <Header />
         <div className="content">
           {this.handleRenderCharacters()}
