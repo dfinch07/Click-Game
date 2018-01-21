@@ -19,6 +19,7 @@ class App extends Component {
     topScore: 0,
     maxScore: 12,
     message: "Click an image to begin!",
+    messageClass: "",
     characters: characters
   };
 
@@ -48,22 +49,19 @@ class App extends Component {
     if (this.state.score+1 > this.state.topScore) {
       this.setState({topScore: this.state.topScore+1})
     }
-    console.log(this.state.score+1)
     if (this.state.score+1 === this.state.maxScore) {
-      this.setState({score: this.state.score+1, message: "Congrats! You win!"})
+      this.setState({score: this.state.score+1, message: "Congrats! You win!", messageClass:"correct"})
     }else{
-      this.setState({score: this.state.score+1, message: "You guessed correctly!"})
+      this.setState({score: this.state.score+1, message: "You guessed correctly!", messageClass:"correct"})
     }
   }
 
   handleResetWin = (currentCharacters) => {
     //if current score is at max reset score to 0 and topscore to 0
-    console.log(this.state.score, this.state.maxScore)
     if (this.state.score+1 === this.state.maxScore) {
-      this.setState({score: 0, topscore: 0})
+      this.setState({score: 0, topScore: 0})
       //reset clicked state for characters
       const updatedCharacters = currentCharacters.map(ch => (true) ? { ...ch, isClicked: false } : ch)
-        console.log("win", updatedCharacters)
       return updatedCharacters
     }else{
       return currentCharacters
@@ -80,7 +78,6 @@ class App extends Component {
 
 
   handleShuffleChararcters = (name) => {
-    console.log('click to shuffle', name)
     // this.handleResetWin();
     var resetNeeded = false;
     const characters = this.state.characters.map(ch => {
@@ -98,17 +95,19 @@ class App extends Component {
     })
 
     if (resetNeeded) {
-      this.setState({ characters: this.shuffle(this.handleIncorrectSelection()) })
+      this.setState({
+        characters: this.shuffle(this.handleIncorrectSelection()),
+        messageClass:"incorrect"
+      })
       
     }else{
+      //check if game is won before rendering characters
       this.setState({ characters: this.shuffle(this.handleResetWin(characters)) })
     }
-
     
   }
 
   handleRenderCharacters = () => {
-    console.log(this.state.characters)
     return this.state.characters.map((character) =>
             <Item 
               image={character.image} 
@@ -126,6 +125,7 @@ class App extends Component {
           score={this.state.score}
           topscore={this.state.topScore}
           message={this.state.message}
+          messageClass={this.state.messageClass}
         />
         <Header />
         <div className="content">
